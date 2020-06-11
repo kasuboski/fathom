@@ -10,12 +10,15 @@ import (
 	"github.com/kelseyhightower/envconfig"
 	log "github.com/sirupsen/logrus"
 	"github.com/usefathom/fathom/pkg/datastore/sqlstore"
+	"github.com/usefathom/fathom/pkg/models"
 )
 
 // Config wraps the configuration structs for the various application parts
 type Config struct {
 	Database *sqlstore.Config
 	Secret   string
+	User     *models.User
+	Site     *models.Site
 }
 
 // LoadEnv loads env values from the supplied file

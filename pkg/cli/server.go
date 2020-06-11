@@ -10,6 +10,7 @@ import (
 
 	"github.com/gorilla/handlers"
 	"github.com/usefathom/fathom/pkg/api"
+	"github.com/usefathom/fathom/pkg/models"
 	"golang.org/x/crypto/acme/autocert"
 )
 
@@ -71,6 +72,24 @@ func server(c *cli.Context) error {
 	addr := c.String("addr")
 	if _, err := strconv.Atoi(addr); err == nil {
 		addr = ":" + addr
+	}
+
+	userConf := app.config.User
+	if userConf != nil {
+		email := userConf.Email
+		password := userConf.Password
+		user := models.NewUser(email, password)
+
+		if err := app.database.SaveUser(&user); err != nil {
+			log.Warnf("Error creating user: %s", err)
+		}
+	}
+
+	siteConf := app.config.Site
+	if siteConf != nil {
+		if err := app.database.SaveSite(siteConf); err != nil {
+			log.Warnf("Error creating site: %s", err)
+		}
 	}
 
 	// start server without letsencrypt / tls enabled
