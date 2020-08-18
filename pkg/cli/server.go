@@ -92,6 +92,14 @@ func server(c *cli.Context) error {
 		}
 	}
 
+	sitesConfig := app.config.Sites
+	sites := []models.Site(sitesConfig)
+	for _, s := range sites {
+		if err := app.database.SaveSite(&s); err != nil {
+			log.Warnf("Error creating site: %s", err)
+		}
+	}
+
 	// start server without letsencrypt / tls enabled
 	if !c.Bool("lets-encrypt") {
 		// start listening

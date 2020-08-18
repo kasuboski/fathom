@@ -1,6 +1,7 @@
 package config
 
 import (
+	"encoding/json"
 	"math/rand"
 	"net/url"
 	"os"
@@ -19,6 +20,22 @@ type Config struct {
 	Secret   string
 	User     *models.User
 	Site     *models.Site
+	Sites    SitesConfig
+}
+
+// SitesConfig configures multiple Sites
+type SitesConfig []models.Site
+
+// Decode will decode an array of sites
+func (sc *SitesConfig) Decode(value string) error {
+	t := make([]models.Site, 0, 0)
+	err := json.Unmarshal([]byte(value), &t)
+	if err != nil {
+		return err
+	}
+	*sc = SitesConfig(t)
+
+	return nil
 }
 
 // LoadEnv loads env values from the supplied file
